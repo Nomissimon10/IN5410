@@ -4,7 +4,7 @@ from generateElectricityPrices import generate_electricity_prices
 from appliances import nonShiftable, shiftable, random
 from classes import Appliance
 
-
+#Using main to create and test objects
 def main():
     allAppliances = []
     nonShiftableAppliances = []
