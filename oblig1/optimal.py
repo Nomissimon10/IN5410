@@ -79,7 +79,7 @@ def calculate_schedule_cost(schedule: dict) -> int:
             total += estimate_electricity_cost_for_run(
                 hour, appliance.duration, appliance.consumes)
 
-    return int(total)
+    return int(total / 1000)
 
 
 schedule = optimal_calculation(shiftable_appliances)
