@@ -19,3 +19,46 @@ class Appliance:
 
     def __str__(self):
         return f"{self.name} ({self.consumption} kW) \nDaily use: {self.duration} hours in timeslot {self.timeStart}-{self.timeStop}\n"
+
+
+class Household:
+
+    def __init__(self):
+        self.allAppliances = []
+        self.nonShiftable = None
+        self.shiftable = None
+        self.auxilary = None
+
+    def setNonShiftable(self, list):
+        self.nonShiftable = list
+        for a in list:
+            if a not in self.allAppliances:
+                self.allAppliances.append(a)
+
+    def setShiftable(self, list):
+        self.shiftable = list
+        for a in list:
+            if a not in self.allAppliances:
+                self.allAppliances.append(a)
+
+    def setAuxilary(self, list):
+        self.auxilary = list
+        for a in list:
+            if a not in self.allAppliances:
+                self.allAppliances.append(a)
+
+    def randomizeAppliances(appliances: list) -> list:
+        return random.sample(appliances, random.randint(1, len(appliances)))
+
+    def removeEV(self):
+        for a in self.allAppliances:
+            if a.name == "ev":
+                self.allAppliances.remove(a)
+                self.shiftable.remove(a)
+
+    def printAllHouseholdAppliances(self):
+        print("Household has", len(
+            self.allAppliances), "appliances.")
+        for a in self.allAppliances:
+            print("----")
+            print(a)

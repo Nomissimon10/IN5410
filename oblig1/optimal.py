@@ -67,7 +67,7 @@ def estimate_best_hour_start(duration: int, min_hour: int, max_hour: int, consum
 # * OUTPUT: dict -> {hour: Appliance[]}
 
 
-def optimal_calculation(appliances: list[Appliance]) -> dict:
+def optimal_calculation(appliances):
     schedule = {}
     for i in range(24):
         schedule[i] = []
