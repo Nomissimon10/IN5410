@@ -50,7 +50,7 @@ def main():
     # * Assignment 3
     print("Assignment 3 \n-----------------------------------------------------------------")
     neigborhoodAppliances = []
-    n = 4
+    n = 30
     # Create N number of households
     for i in range(n):
         household = Household()
