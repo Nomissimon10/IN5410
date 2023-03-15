@@ -23,7 +23,8 @@ class Appliance:
 
 class Household:
 
-    def __init__(self):
+    def __init__(self, id):
+        self.id = id
         self.allAppliances = []
         self.nonShiftable = None
         self.shiftable = None

@@ -81,8 +81,37 @@ def optimal_calculation(appliances):
         hour_start = estimate_best_hour_start(
             appliance.duration, appliance.timeStart, appliance.timeStop, appliance.consumption)
         schedule[hour_start].append(appliance)
-
     return schedule
+
+
+# * DESCRIPTION: Calculates total load for each hour based on all appliances, and peak hour + load
+# * INPUT: appliances: Appliance[] -> list of appliances
+# * OUTPUT: schedule: dict, peakHour: int, peakLoad: float
+
+def calculate_peak_load(appliances):
+    schedule = {}
+    for i in range(24):
+        schedule[i] = 0
+    # Calculate total energy consumption for all appliances each hour
+    for a in appliances:
+        if not a.shiftable or ((a.timeStart + a.duration) % 24) == a.timeStop % 24:
+            for i in range(24):
+                schedule[i] += (a.consumption / 24)/1000
+            continue
+        hourStart = estimate_best_hour_start(
+            a.duration, a.timeStart, a.timeStop, a.consumption
+        )
+        for i in range(hourStart, (hourStart + a.duration + 1)):
+            schedule[i] += round(a.consumption / a.duration)/1000
+    # Find hour with highest energy consumption
+    peakHour = 0
+    peakPrice = schedule[peakHour]
+    for hour in schedule.keys():
+        if schedule[hour] > peakPrice:
+            peakHour = hour
+            peakPrice = schedule[peakHour]
+    return schedule, peakHour, peakPrice
+
 
 # * DESCRIPTION: Calculates the total daily energy consumption for the given schedule
 # * INPUT: schedule: dict -> {hour: Appliance[]}
@@ -101,8 +130,11 @@ def calculate_schedule_cost(schedule: dict) -> int:
 
 def print_schedule(schedule: dict) -> None:
     for hour in schedule.keys():
+        hourlyLoad = 0
         if (len(schedule[hour]) == 0):
             continue
         for appliance in schedule[hour]:
+            hourlyLoad += (appliance.consumption / 1000)/appliance.duration
             print(
                 f'{f"{hour}:00-{hour + appliance.duration}:00":<11} - {appliance.name:<16} ({appliance.consumption / 1000} kW)')
+        print("Total hourly load:", hourlyLoad)

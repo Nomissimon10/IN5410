@@ -4,7 +4,7 @@ from generateElectricityPrices import generate_electricity_prices
 from appliances import nonShiftable, shiftable, auxilary
 from classes import Appliance, Household
 
-from optimal import optimal_calculation, calculate_schedule_cost, print_schedule
+from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, calculate_peak_load
 
 import random
 
@@ -37,7 +37,7 @@ def main():
     # * Assignment 2
     print("Assignment 2 \n-----------------------------------------------------------------")
     # Create household with all nonshiftable, all shiftable, and random auxilary appliances
-    household = Household()
+    household = Household(1)
     household.setNonShiftable(nonShiftableAppliances)
     household.setShiftable(shiftableAppliances)
     household.setAuxilary(randomizeList(auxilaryAppliances))
@@ -53,7 +53,7 @@ def main():
     n = 30
     # Create N number of households
     for i in range(n):
-        household = Household()
+        household = Household(i+1)
         household.setNonShiftable(nonShiftableAppliances)
         household.setShiftable(shiftableAppliances)
         household.setAuxilary(randomizeList(auxilaryAppliances))
@@ -64,10 +64,32 @@ def main():
         # Adds households appliances to neighborhood total appliances
         for a in household.allAppliances:
             neigborhoodAppliances.append(a)
+        # Create and print household schedule
+        householdScehdule = optimal_calculation(household.allAppliances)
+        print("Household", household.id)
+        print_schedule(householdScehdule)
+        print(
+            f'Household energy cost: {calculate_schedule_cost(householdScehdule)}nok\n--------------------------------------------')
 
     neighborhoodSchedule = optimal_calculation(neigborhoodAppliances)
-    print_schedule(neighborhoodSchedule)
-    print(f'{calculate_schedule_cost(neighborhoodSchedule)}nok for this schedule')
+    print(
+        f'Total neighborhood cost: {calculate_schedule_cost(neighborhoodSchedule)}nok\n')
+
+    # * Assignment 4
+    print("Assignment 4 \n-----------------------------------------------------------------")
+    household = Household(1)
+    household.setNonShiftable(nonShiftableAppliances)
+    household.setShiftable(shiftableAppliances)
+    household.setAuxilary(randomizeList(auxilaryAppliances))
+
+    calculations = calculate_peak_load(household.allAppliances)
+    consumptionDistribution = calculations[0]
+    peakHour = calculations[1]
+    peakLoad = calculations[2]
+
+    for hour in consumptionDistribution:
+        print(hour, "--", consumptionDistribution[hour], "kWh")
+    print("Peak hour:", peakHour, "Peak load:", peakLoad, "kWh")
 
 
 def randomizeList(list):
