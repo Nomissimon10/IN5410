@@ -203,7 +203,7 @@ def optimizeSchedule(schedule):
             newTotalCost = calculatePeak(originalSchedule)[2]
             if newPeakLoad > peakLoad and newTotalCost > totalCost:
                 del originalSchedule[-1]
-            elif newPeakLoad < peakLoad:
+            elif newPeakLoad < peakLoad:  # her skal det egt stå newPeakLoad < peakLoad AND newTotalCost < total cost, men da kommer det ingen endringer
                 peakLoad = newPeakLoad
                 totalCost = newTotalCost
                 appliance = originalSchedule.pop()
