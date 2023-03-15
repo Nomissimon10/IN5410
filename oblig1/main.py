@@ -4,7 +4,7 @@ from generateElectricityPrices import generate_electricity_prices
 from appliances import nonShiftable, shiftable, auxilary
 from classes import Appliance, Household
 
-from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, calculate_peak_load
+from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, calculate_peak_load, scheduleAppliances, print_scedule_2, calculatePeak, optimizeSchedule
 
 import random
 
@@ -82,14 +82,8 @@ def main():
     household.setShiftable(shiftableAppliances)
     household.setAuxilary(randomizeList(auxilaryAppliances))
 
-    calculations = calculate_peak_load(household.allAppliances)
-    consumptionDistribution = calculations[0]
-    peakHour = calculations[1]
-    peakLoad = calculations[2]
-
-    for hour in consumptionDistribution:
-        print(hour, "--", consumptionDistribution[hour], "kWh")
-    print("Peak hour:", peakHour, "Peak load:", peakLoad, "kWh")
+    sched = scheduleAppliances(household.allAppliances)
+    optimizeSchedule(sched)
 
 
 def randomizeList(list):

@@ -1,5 +1,6 @@
 import math
 from classes import Appliance
+from appliances import nonShiftable, shiftable, auxilary
 
 prices = {
     0: 0.17043824334020852,
@@ -31,13 +32,11 @@ prices = {
 
 def estimate_electricity_cost_for_run(hour: int, duration: int, consumes: int) -> int:
     global prices
-
     cost = 0
     for i in range(hour, hour + duration):
         if i >= 24:
             i -= 24
         cost += prices[i] * (consumes / duration)
-
     return cost
 
 # * DESCRIPTION: Estimates the electricity cost for a given hour
@@ -102,7 +101,7 @@ def calculate_peak_load(appliances):
             a.duration, a.timeStart, a.timeStop, a.consumption
         )
         for i in range(hourStart, (hourStart + a.duration + 1)):
-            schedule[i] += round(a.consumption / a.duration)/1000
+            schedule[i] += (a.consumption / a.duration)/1000
     # Find hour with highest energy consumption
     peakHour = 0
     peakPrice = schedule[peakHour]
@@ -113,9 +112,119 @@ def calculate_peak_load(appliances):
     return schedule, peakHour, peakPrice
 
 
+def scheduleAppliances(appliances):
+    schedule = []
+    for a in appliances:
+        if not a.shiftable or ((a.timeStart + a.duration) % 24) == a.timeStop % 24:
+            schedule.append({
+                "name": a.name,
+                "start": a.timeStart,
+                "stop": a.timeStop,
+                "duration": a.duration,
+                "consumption": (a.consumption/a.duration)
+            })
+            continue
+        optimalStartTime = estimate_best_hour_start(
+            a.duration, a.timeStart, a.timeStop, a.consumption
+        )
+        schedule.append({
+            "name": a.name,
+            "start": optimalStartTime,
+            "stop": a.timeStop,
+            "duration": a.duration,
+            "consumption": (a.consumption/a.duration)
+        })
+    # Sort schedule by appliance start time
+    schedule = sorted(schedule, key=lambda x: x["start"])
+    return schedule
+
+
+def calculatePeak(schedule):
+    hourlyTotalConsumption = {}
+    totalCost = 0
+    for i in range(24):
+        hourlyTotalConsumption[i] = 0
+    for appliance in schedule:
+        for i in range(appliance["start"], (appliance["start"]+appliance["duration"])):
+            hourlyTotalConsumption[i] += appliance["consumption"]/1000
+    peakHour = 0
+    peakLoad = hourlyTotalConsumption[peakHour]
+    for hour in hourlyTotalConsumption:
+        if hourlyTotalConsumption[hour] > peakLoad:
+            peakHour = hour
+            peakLoad = hourlyTotalConsumption[peakHour]
+   # for hour in hourlyTotalConsumption:
+    #    print(hour, " - ", hourlyTotalConsumption[hour])
+    for x in schedule:
+        totalCost += estimate_electricity_cost_for_run(
+            x["start"], x["duration"], (x["consumption"]*x["duration"])/1000)
+
+    return peakHour, peakLoad, totalCost
+
+
+def applianceReference(appliance):
+    for a in nonShiftable:
+        if a == appliance["name"]:
+            return nonShiftable[a]
+    for a in shiftable:
+        if a == appliance["name"]:
+            return shiftable[a]
+    for a in auxilary:
+        if a == appliance["name"]:
+            return auxilary[a]
+
+
+def optimizeSchedule(schedule):
+    # Create copy of schedule
+    originalSchedule = schedule.copy()
+    peakHour = calculatePeak(originalSchedule)[0]
+    peakLoad = calculatePeak(originalSchedule)[1]
+    totalCost = calculatePeak(originalSchedule)[2]
+    lenght = len(originalSchedule)
+    newSchedule = []
+    print("Incomming:")
+    print("Peak load", peakLoad)
+    print("Total cost", totalCost)
+
+    for i in range(len(originalSchedule)):
+        if originalSchedule[i]["duration"] == 24:
+            continue
+        appliance = originalSchedule.pop(i)
+        ref = applianceReference(appliance)
+        for j in range(ref[4], ref[5]-ref[3]):
+            originalSchedule.append({
+                "name": appliance["name"],
+                "start": j,
+                "stop": ref[5],
+                "duration": ref[3],
+                "consumption": appliance["consumption"]
+            })
+            newPeakLoad = calculatePeak(originalSchedule)[1]
+            newTotalCost = calculatePeak(originalSchedule)[2]
+            if newPeakLoad > peakLoad and newTotalCost > totalCost:
+                del originalSchedule[-1]
+            elif newPeakLoad < peakLoad:
+                peakLoad = newPeakLoad
+                totalCost = newTotalCost
+                appliance = originalSchedule.pop()
+            else:
+                del originalSchedule[-1]
+
+        if len(originalSchedule) < lenght:
+            originalSchedule.append(appliance)
+
+    peakLoad = calculatePeak(originalSchedule)[1]
+    totalCost = calculatePeak(originalSchedule)[2]
+    print("Outgoing:")
+    print("Peak load", peakLoad)
+    print("Total cost", totalCost)
+
+    return originalSchedule
+
+
 # * DESCRIPTION: Calculates the total daily energy consumption for the given schedule
 # * INPUT: schedule: dict -> {hour: Appliance[]}
-# * OUTPUT: int
+# # * OUTPUT: int
 
 
 def calculate_schedule_cost(schedule: dict) -> int:
@@ -130,11 +239,21 @@ def calculate_schedule_cost(schedule: dict) -> int:
 
 def print_schedule(schedule: dict) -> None:
     for hour in schedule.keys():
-        hourlyLoad = 0
         if (len(schedule[hour]) == 0):
             continue
         for appliance in schedule[hour]:
-            hourlyLoad += (appliance.consumption / 1000)/appliance.duration
             print(
                 f'{f"{hour}:00-{hour + appliance.duration}:00":<11} - {appliance.name:<16} ({appliance.consumption / 1000} kW)')
-        print("Total hourly load:", hourlyLoad)
+
+
+def print_scedule_2(schedule):
+    totalConsumption = 0
+    totalCost = 0
+    for x in schedule:
+        totalConsumption += (x["consumption"]/1000)*x["duration"]
+        totalCost += estimate_electricity_cost_for_run(
+            x["start"], x["duration"], (x["consumption"]*x["duration"])/1000)
+        print(x["start"], ":00 -", (x["start"]+x["duration"]),
+              ":00 ", x["name"], " - ", (x["consumption"]/1000), "kWh")
+    print("Total energy consumption:", round(totalConsumption, 4),
+          "kWh\nTotal energy cost:", round(totalCost/1000, 2), "nok")
