@@ -17,7 +17,7 @@ shiftable = {
     "ev": [True, 9900, None, 4, 0, 23]
 }
 
-random = {
+auxilary = {
     "coffemaker": [True, 2.4, None, 1, 6, 8],
     "celingfan": [True, 55, 100, 4, 10, 18],
     "hairdryer": [True, 800, 1800, 1, 6, 8],
