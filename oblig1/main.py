@@ -1,10 +1,6 @@
-from plotPriceScheme import plotTable
-from generateElectricityPrices import generate_electricity_prices
-
 from appliances import nonShiftable, shiftable, auxilary
 from classes import Appliance, Household
-
-from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, calculate_peak_load, scheduleAppliances, print_scedule_2, calculatePeak, optimizeSchedule
+from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, scheduleAppliances, optimizeSchedule, print_scedule_2
 
 import random
 
