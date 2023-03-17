@@ -6,8 +6,8 @@ def generate_electricity_prices():
     base_price = 0.10
 
     # Define the peak hours and off-peak hours
-    peak_hours = [7, 8, 9, 10, 16, 17, 18, 19, 20, 21]
-    off_peak_hours = [0, 1, 2, 3, 4, 5, 6, 22, 23, 11, 12, 13, 14, 15]
+    peak_hours = [16, 17, 18, 19, 20]
+    off_peak_hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23]
 
     # Create a dictionary to store the prices for each hour
     prices = {}
