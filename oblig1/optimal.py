@@ -177,14 +177,11 @@ def applianceReference(appliance):
 def optimizeSchedule(schedule):
     # Create copy of schedule
     originalSchedule = schedule.copy()
-    peakHour = calculatePeak(originalSchedule)[0]
     peakLoad = calculatePeak(originalSchedule)[1]
     totalCost = calculatePeak(originalSchedule)[2]
+    orginalPeakLoad = peakLoad
+    originalCost = totalCost
     lenght = len(originalSchedule)
-    newSchedule = []
-    print("Incomming:")
-    print("Peak load", peakLoad)
-    print("Total cost", totalCost)
 
     for i in range(len(originalSchedule)):
         if originalSchedule[i]["duration"] == 24:
@@ -203,22 +200,22 @@ def optimizeSchedule(schedule):
             newTotalCost = calculatePeak(originalSchedule)[2]
             if newPeakLoad > peakLoad and newTotalCost > totalCost:
                 del originalSchedule[-1]
-            elif newPeakLoad < peakLoad:  # her skal det egt stå newPeakLoad < peakLoad AND newTotalCost < total cost, men da kommer det ingen endringer
+            # her skal det egt stå newPeakLoad < peakLoad AND newTotalCost < total cost, men da kommer det ingen endringer
+            elif newPeakLoad < peakLoad:
                 peakLoad = newPeakLoad
                 totalCost = newTotalCost
                 appliance = originalSchedule.pop()
             else:
                 del originalSchedule[-1]
-
         if len(originalSchedule) < lenght:
             originalSchedule.append(appliance)
-
     peakLoad = calculatePeak(originalSchedule)[1]
     totalCost = calculatePeak(originalSchedule)[2]
-    print("Outgoing:")
-    print("Peak load", peakLoad)
-    print("Total cost", totalCost)
-
+    print("New load calculated:")
+    print("Peak load\nOld:", round(orginalPeakLoad, 2),
+          " kWh ---> New:", round(peakLoad, 2), " kWh")
+    print("Total cost\nOld:", round(originalCost, 2),
+          "nok ---> New:", round(totalCost, 2), "nok")
     return originalSchedule
 
 
@@ -247,13 +244,6 @@ def print_schedule(schedule: dict) -> None:
 
 
 def print_scedule_2(schedule):
-    totalConsumption = 0
-    totalCost = 0
     for x in schedule:
-        totalConsumption += (x["consumption"]/1000)*x["duration"]
-        totalCost += estimate_electricity_cost_for_run(
-            x["start"], x["duration"], (x["consumption"]*x["duration"])/1000)
         print(x["start"], ":00 -", (x["start"]+x["duration"]),
-              ":00 ", x["name"], " - ", (x["consumption"]/1000), "kWh")
-    print("Total energy consumption:", round(totalConsumption, 4),
-          "kWh\nTotal energy cost:", round(totalCost/1000, 2), "nok")
+              ":00 ", x["name"], " - ", round((x["consumption"]/1000), 2), "kWh")

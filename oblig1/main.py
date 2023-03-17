@@ -82,8 +82,9 @@ def main():
     household.setShiftable(shiftableAppliances)
     household.setAuxilary(randomizeList(auxilaryAppliances))
 
-    sched = scheduleAppliances(household.allAppliances)
-    optimizeSchedule(sched)
+    schedule = scheduleAppliances(household.allAppliances)
+    schedule = optimizeSchedule(schedule)
+    print_scedule_2(schedule)
 
 
 def randomizeList(list):
