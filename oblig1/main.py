@@ -49,11 +49,11 @@ def main():
     n = 30
     # Create N number of households
     for i in range(n):
-        household = Household(i+1)
+        household = Household(i + 1)
         household.setNonShiftable(nonShiftableAppliances)
         household.setShiftable(shiftableAppliances)
         household.setAuxilary(randomizeList(auxilaryAppliances))
-        # Household has a 75% chance of NOT having a EV
+        # Household has a 75% chance of having a EV
         x = random.randint(0, 4)
         if x == 0:
             household.removeEV()
