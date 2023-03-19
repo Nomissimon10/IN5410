@@ -25,14 +25,13 @@ def plotTable(pricesDict):
 
 
 def plotHourlyConsumption(schedule, appliances):
-    # Example data
     categories = list(range(24))
     colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
               '#800000', '#008000', '#000080', '#808000', '#800080', '#008080',
               '#FFA500', '#FFC0CB', '#FFD700', '#FFE4B5', '#7FFFD4', '#DA70D6',
               '#00BFFF', '#9400D3']
 
-    # Set up the positions and width for the bars
+    # Set up the positions for the bars
     r = np.arange(len(categories))
 
     # Plot the bars
