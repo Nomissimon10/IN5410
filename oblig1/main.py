@@ -1,6 +1,6 @@
 from appliances import nonShiftable, shiftable, auxilary
 from classes import Appliance, Household
-from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, scheduleAppliances, optimizeSchedule
+from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, scheduleAppliances, optimizeSchedule, print_scedule_2
 
 import random
 from plotPriceScheme import plotHourlyConsumptionForHousehold, plotHouseholdUsages
@@ -113,6 +113,7 @@ def task4():
         opt_schedule[i["start"]].append(household.allAppliances[index])
         index += 1
 
+    print_scedule_2(optimized_schedule)
     plotHourlyConsumptionForHousehold(opt_schedule, household.allAppliances)
 
 

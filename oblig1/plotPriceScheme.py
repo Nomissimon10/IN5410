@@ -59,8 +59,15 @@ def plotHouseholdUsages(schedules):
         index += 1
 
     # Add xticks on the middle of the group bars
+    categories_time = []
+    for i in r:
+        if len(str(i)) == 1:
+            categories_time.append(f"0{i}:00")
+        else:
+            categories_time.append(f"{i}:00")
+
     plt.xlabel('Households')
-    plt.xticks(r, r)
+    plt.xticks(r, categories_time)
     plt.ylabel('Consumption (kWh)')
 
     # Add a legend
@@ -101,8 +108,15 @@ def plotHourlyConsumptionForHousehold(schedule, appliances):
         index += 1
 
     # Add xticks on the middle of the group bars
+    categories_time = []
+    for i in categories:
+        if len(str(i)) == 1:
+            categories_time.append(f"0{i}:00")
+        else:
+            categories_time.append(f"{i}:00")
+
     plt.xlabel('Categories')
-    plt.xticks(r, categories)
+    plt.xticks(r, categories_time)
     plt.ylabel('Consumption (kWh)')
 
     # Add a legend

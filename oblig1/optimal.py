@@ -263,10 +263,10 @@ def print_scedule_2(schedule):
     totalConsumption = 0
     totalCost = 0
     for x in schedule:
-        totalConsumption += (x["consumption"] / 1000) * x["duration"]
+        totalConsumption += x["consumption"] * x["duration"]
         totalCost += estimate_electricity_cost_for_run(
-            x["start"], x["duration"], (x["consumption"] * x["duration"])/1000)
+            x["start"], x["duration"], (x["consumption"] * x["duration"]))
         print(x["start"], ":00 -", (x["start"]+x["duration"]),
               ":00 ", x["name"], " - ", (x["consumption"] / 1000), "kWh")
-    print("Total energy consumption:", round(totalConsumption, 4),
+    print("Total energy consumption:", round(totalConsumption, 4) / 1000,
           "kWh\nTotal energy cost:", round(totalCost / 1000, 2), "nok")
