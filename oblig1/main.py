@@ -3,6 +3,7 @@ from classes import Appliance, Household
 from optimal import optimal_calculation, calculate_schedule_cost, print_schedule, scheduleAppliances, optimizeSchedule
 
 import random
+from plotPriceScheme import plotHourlyConsumption
 
 
 def main():
@@ -42,6 +43,7 @@ def main():
     householdSchedule = optimal_calculation(household.allAppliances)
     print_schedule(householdSchedule)
     print(f'{calculate_schedule_cost(householdSchedule)}nok for this schedule')
+    plotHourlyConsumption(householdSchedule, household.allAppliances)
 
     # * Assignment 3
     print("Assignment 3 \n-----------------------------------------------------------------")

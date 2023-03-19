@@ -1,4 +1,4 @@
-# Object structure: name:shiftable(bool), minW, maxW, hrs daily usage, not used before, not used after
+# Object structure: name: shiftable(bool), minW, maxW, hrs daily usage, not used before, not used after
 
 nonShiftable = {
     "Lighting": [False, 1000, 2000, 10, 10, 20],
@@ -18,12 +18,12 @@ shiftable = {
 }
 
 auxilary = {
-    "Coffeemaker": [True, 2.4, None, 1, 6, 8],
+    "Coffeemaker": [True, int(300 / 4), int(1500 / 4), 1, 6, 8],
     "Ceiling-Fan": [True, 55, 100, 4, 10, 18],
-    "Hairdryer": [True, 800, 1800, 1, 6, 8],
-    "Toaster": [True, 800, 1500, 1, 6, 8],
-    "Microwave": [True, 850, 1800, 1, 0, 24],
+    "Hairdryer": [True, int(800 / 4), int(1800 / 4), 1, 6, 8],
+    "Toaster": [True, int(800 / 12), int(1500 / 12), 1, 6, 8],
+    "Microwave": [True, int(850 / 6), int(1800 / 6), 1, 0, 24],
     "Router": [True, 2, 20, 24, 0, 24],
     "Cellphone-charger": [True, 2, 6, 4, 0, 24],
-    "Cloth-iron": [True, 800, 2000, 1, 20, 24]
+    "Cloth-iron": [True, int(800 / 2), int(2000 / 2), 1, 20, 24]
 }
